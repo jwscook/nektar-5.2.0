@@ -39,8 +39,6 @@
 #include <TestData.h>
 #include <TestException.hpp>
 
-using namespace std;
-
 namespace Nektar
 {
 TestData::TestData(const fs::path &pFilename, po::variables_map &pVm)
@@ -53,7 +51,7 @@ TestData::TestData(const fs::path &pFilename, po::variables_map &pVm)
 
     ASSERTL0(loadOkay,
              "Failed to load test definition file: " + pFilename.string() +
-                 "\n" + string(m_doc->ErrorDesc()));
+                 "\n" + std::string(m_doc->ErrorDesc()));
 
     Parse(m_doc);
 }
@@ -87,8 +85,8 @@ std::string TestData::GetMetricType(unsigned int pId) const
     // read the property name
     ASSERTL0(m_metrics[pId]->Attribute("type"),
              "Missing 'type' attribute in metric " +
-                 boost::lexical_cast<string>(pId) + ").");
-    return boost::to_upper_copy(string(m_metrics[pId]->Attribute("type")));
+                 boost::lexical_cast<std::string>(pId) + ").");
+    return boost::to_upper_copy(std::string(m_metrics[pId]->Attribute("type")));
 }
 
 unsigned int TestData::GetNumMetrics() const
@@ -152,7 +150,7 @@ Command TestData::ParseCommand(TiXmlElement *elmt) const
     ASSERTL0(tmp, "Cannot find 'parameters' for test.");
     if (tmp->GetText())
     {
-        cmd.m_parameters = string(tmp->GetText());
+        cmd.m_parameters = std::string(tmp->GetText());
     }
 
     // Find parallel processes tah.
@@ -179,7 +177,7 @@ void TestData::Parse(TiXmlDocument *pDoc)
     // Find description tag.
     tmp = testElement->FirstChildElement("description");
     ASSERTL0(tmp, "Cannot find 'description' for test.");
-    m_description = string(tmp->GetText());
+    m_description = std::string(tmp->GetText());
 
     // Find command(s) to run.
     if (m_cmdoptions.count("executable"))
@@ -227,10 +225,10 @@ void TestData::Parse(TiXmlDocument *pDoc)
         while (tmp)
         {
             DependentFile f;
-            f.m_filename = string(tmp->GetText());
+            f.m_filename = std::string(tmp->GetText());
             if (tmp->Attribute("description"))
             {
-                f.m_description = string(tmp->Attribute("description"));
+                f.m_description = std::string(tmp->Attribute("description"));
             }
             m_files.push_back(f);
             tmp = tmp->NextSiblingElement("file");

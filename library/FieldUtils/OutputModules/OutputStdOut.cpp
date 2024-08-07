@@ -32,9 +32,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <set>
-#include <string>
-using namespace std;
 
 #include <boost/core/ignore_unused.hpp>
 #include <boost/format.hpp>

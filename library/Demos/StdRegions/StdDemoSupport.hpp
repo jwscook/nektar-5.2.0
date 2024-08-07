@@ -53,7 +53,6 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/program_options.hpp>
 
-using namespace std;
 using namespace Nektar;
 using namespace Nektar::LibUtilities;
 using namespace Nektar::StdRegions;

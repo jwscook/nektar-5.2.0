@@ -37,8 +37,6 @@
 
 #include <LocalRegions/Expansion.h>
 
-using namespace std;
-
 namespace Nektar
 {
 namespace Collections
@@ -53,7 +51,7 @@ CoalescedGeomData::~CoalescedGeomData(void)
 }
 
 const Array<OneD, const NekDouble> &CoalescedGeomData::GetJac(
-    vector<StdRegions::StdExpansionSharedPtr> &pCollExp)
+    std::vector<StdRegions::StdExpansionSharedPtr> &pCollExp)
 {
 
     if (m_oneDGeomData.count(eJac) == 0)
@@ -114,7 +112,7 @@ const Array<OneD, const NekDouble> &CoalescedGeomData::GetJac(
 }
 
 const std::shared_ptr<VecVec_t> CoalescedGeomData::GetJacInterLeave(
-    vector<StdRegions::StdExpansionSharedPtr> &pCollExp, int nElmt)
+    std::vector<StdRegions::StdExpansionSharedPtr> &pCollExp, int nElmt)
 {
 
     if (m_oneDGeomDataInterLeave.count(eJac) == 0)
@@ -198,7 +196,7 @@ const std::shared_ptr<VecVec_t> CoalescedGeomData::GetJacInterLeave(
 }
 
 const Array<OneD, const NekDouble> &CoalescedGeomData::GetJacWithStdWeights(
-    vector<StdRegions::StdExpansionSharedPtr> &pCollExp)
+    std::vector<StdRegions::StdExpansionSharedPtr> &pCollExp)
 {
     if (m_oneDGeomData.count(eJacWithStdWeights) == 0)
     {
@@ -246,7 +244,7 @@ const Array<OneD, const NekDouble> &CoalescedGeomData::GetJacWithStdWeights(
 }
 
 const Array<TwoD, const NekDouble> &CoalescedGeomData::GetDerivFactors(
-    vector<StdRegions::StdExpansionSharedPtr> &pCollExp)
+    std::vector<StdRegions::StdExpansionSharedPtr> &pCollExp)
 {
     if (m_twoDGeomData.count(eDerivFactors) == 0)
     {
@@ -309,7 +307,7 @@ const Array<TwoD, const NekDouble> &CoalescedGeomData::GetDerivFactors(
 }
 
 const std::shared_ptr<VecVec_t> CoalescedGeomData::GetDerivFactorsInterLeave(
-    vector<StdRegions::StdExpansionSharedPtr> &pCollExp, int nElmt)
+    std::vector<StdRegions::StdExpansionSharedPtr> &pCollExp, int nElmt)
 {
     if (m_twoDGeomDataInterLeave.count(eDerivFactors) == 0)
     {
@@ -398,7 +396,7 @@ const std::shared_ptr<VecVec_t> CoalescedGeomData::GetDerivFactorsInterLeave(
 }
 
 bool CoalescedGeomData::IsDeformed(
-    vector<StdRegions::StdExpansionSharedPtr> &pCollExp)
+    std::vector<StdRegions::StdExpansionSharedPtr> &pCollExp)
 {
     if (!m_isDeformedSet)
     {

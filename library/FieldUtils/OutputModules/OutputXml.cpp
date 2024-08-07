@@ -32,9 +32,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <set>
 #include <string>
-using namespace std;
 
 #include <boost/core/ignore_unused.hpp>
 
@@ -66,10 +64,10 @@ void OutputXml::Process(po::variables_map &vm)
     }
 
     // Extract the output filename and extension
-    string filename = m_config["outfile"].as<string>();
+    std::string filename = m_config["outfile"].as<std::string>();
 
     m_f->m_graph->WriteGeometry(filename);
-    cout << "Written file: " << filename << endl;
+    std::cout << "Written file: " << filename << std::endl;
 }
 } // namespace FieldUtils
 } // namespace Nektar

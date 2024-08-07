@@ -32,9 +32,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <set>
 #include <string>
-using namespace std;
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -125,7 +123,7 @@ void TestElmts(const std::map<int, std::shared_ptr<T>> &geomMap,
 
                 if (output != 1.0)
                 {
-                    log(FATAL) << "Output mesh failed coordinate test" << endl;
+                    log(FATAL) << "Output mesh failed coordinate test" << std::endl;
                 }
             }
 
@@ -143,7 +141,7 @@ void TestElmts(const std::map<int, std::shared_ptr<T>> &geomMap,
             if (output != 1.0)
             {
                 log(FATAL) << "Output mesh failed coordinate midpoint test"
-                           << endl;
+                           << std::endl;
             }
         }
     }
@@ -152,7 +150,7 @@ void TestElmts(const std::map<int, std::shared_ptr<T>> &geomMap,
 void OutputNekpp::Process()
 {
     m_log(VERBOSE) << "Writing Nektar++ file '"
-                   << m_config["outfile"].as<string>() << "'" << endl;
+                   << m_config["outfile"].as<std::string>() << "'" << std::endl;
 
     int order = m_config["order"].as<int>();
 
@@ -168,26 +166,26 @@ void OutputNekpp::Process()
         ModuleSharedPtr module = GetModuleFactory().CreateInstance(
             ModuleKey(eProcessModule, "varopti"), m_mesh);
         module->RegisterConfig("hyperelastic", "");
-        module->RegisterConfig("numthreads", boost::lexical_cast<string>(np));
+        module->RegisterConfig("numthreads", boost::lexical_cast<std::string>(np));
 
         try
         {
             module->SetDefaults();
             module->Process();
         }
-        catch (runtime_error &e)
+        catch (std::runtime_error &e)
         {
             m_log(WARNING) << "Variational optimisation has failed with "
-                           << "message:" << endl;
-            m_log(WARNING) << e.what() << endl;
+                           << "message:" << std::endl;
+            m_log(WARNING) << e.what() << std::endl;
             m_log(WARNING) << "The mesh will be written as is, it may be "
-                           << "invalid" << endl;
+                           << "invalid" << std::endl;
             return;
         }
     }
 
-    string file = m_config["outfile"].as<string>();
-    string ext  = boost::filesystem::extension(file);
+    std::string file = m_config["outfile"].as<std::string>();
+    std::string ext  = boost::filesystem::extension(file);
 
     if (m_config["stats"].beenSet)
     {
@@ -198,7 +196,7 @@ void OutputNekpp::Process()
     std::string type = "XmlCompressed";
 
     // Extract the output filename and extension
-    string filename = m_config["outfile"].as<string>();
+    std::string filename = m_config["outfile"].as<std::string>();
 
     // Compress output and append .gz extension
     if (boost::iequals(ext, ".xml") && m_config["uncompress"].beenSet)
@@ -224,7 +222,7 @@ void OutputNekpp::Process()
     TransferComposites(graph);
     TransferDomain(graph);
 
-    string out = m_config["outfile"].as<string>();
+    std::string out = m_config["outfile"].as<std::string>();
     graph->WriteGeometry(out, true, m_mesh->m_metadata);
 
     // Test the resulting XML file (with a basic test) by loading it
@@ -234,7 +232,7 @@ void OutputNekpp::Process()
     {
         // Create an equation based on the test condition. Should evaluate to 1
         // or 0 using boolean logic.
-        string testcond = m_config["testcond"].as<string>();
+      std::string testcond = m_config["testcond"].as<std::string>();
         int exprId      = -1;
 
         if (testcond.length() > 0)
@@ -242,11 +240,11 @@ void OutputNekpp::Process()
             exprId = m_strEval.DefineFunction("x y z", testcond);
         }
 
-        vector<string> filenames(1);
+        std::vector<std::string> filenames(1);
 
         if (type == "HDF5")
         {
-            vector<string> tmp;
+          std::vector<std::string> tmp;
             boost::split(tmp, filename, boost::is_any_of("."));
             filenames[0] = tmp[0] + ".xml";
         }
@@ -342,7 +340,7 @@ void OutputNekpp::TransferFaces(
 
 void OutputNekpp::TransferElements(MeshGraphSharedPtr graph)
 {
-    vector<ElementSharedPtr> &elmt = m_mesh->m_element[m_mesh->m_expDim];
+  std::vector<ElementSharedPtr> &elmt = m_mesh->m_element[m_mesh->m_expDim];
 
     SegGeomMap &segMap     = graph->GetAllSegGeoms();
     TriGeomMap &triMap     = graph->GetAllTriGeoms();
@@ -399,7 +397,7 @@ void OutputNekpp::TransferElements(MeshGraphSharedPtr graph)
                 {
                     Geometry2DSharedPtr face =
                         graph->GetGeometry2D(elmt[i]->GetFace(j)->m_id);
-                    tfaces[j] = static_pointer_cast<TriGeom>(face);
+                    tfaces[j] = std::static_pointer_cast<TriGeom>(face);
                 }
 
                 tetMap[id] =
@@ -418,12 +416,12 @@ void OutputNekpp::TransferElements(MeshGraphSharedPtr graph)
 
                     if (face->GetShapeType() == LibUtilities::eTriangle)
                     {
-                        faces[j] = static_pointer_cast<TriGeom>(face);
+                        faces[j] = std::static_pointer_cast<TriGeom>(face);
                     }
                     else if (face->GetShapeType() ==
                              LibUtilities::eQuadrilateral)
                     {
-                        faces[j] = static_pointer_cast<QuadGeom>(face);
+                        faces[j] = std::static_pointer_cast<QuadGeom>(face);
                     }
                 }
                 pyrMap[id] =
@@ -442,12 +440,12 @@ void OutputNekpp::TransferElements(MeshGraphSharedPtr graph)
 
                     if (face->GetShapeType() == LibUtilities::eTriangle)
                     {
-                        faces[j] = static_pointer_cast<TriGeom>(face);
+                        faces[j] = std::static_pointer_cast<TriGeom>(face);
                     }
                     else if (face->GetShapeType() ==
                              LibUtilities::eQuadrilateral)
                     {
-                        faces[j] = static_pointer_cast<QuadGeom>(face);
+                        faces[j] = std::static_pointer_cast<QuadGeom>(face);
                     }
                 }
                 prismMap[id] =
@@ -463,7 +461,7 @@ void OutputNekpp::TransferElements(MeshGraphSharedPtr graph)
                 {
                     Geometry2DSharedPtr face =
                         graph->GetGeometry2D(elmt[i]->GetFace(j)->m_id);
-                    faces[j] = static_pointer_cast<QuadGeom>(face);
+                    faces[j] = std::static_pointer_cast<QuadGeom>(face);
                 }
 
                 hexMap[id] =
@@ -488,7 +486,7 @@ void OutputNekpp::TransferCurves(MeshGraphSharedPtr graph)
         {
             CurveSharedPtr curve = MemoryManager<Curve>::AllocateSharedPtr(
                 it->m_id, it->m_curveType);
-            vector<NodeSharedPtr> ns;
+            std::vector<NodeSharedPtr> ns;
             it->GetCurvedNodes(ns);
             for (int i = 0; i < ns.size(); i++)
             {
@@ -509,7 +507,7 @@ void OutputNekpp::TransferCurves(MeshGraphSharedPtr graph)
         for (int e = 0; e < m_mesh->m_element[1].size(); e++)
         {
             ElementSharedPtr el = m_mesh->m_element[1][e];
-            vector<NodeSharedPtr> ns;
+            std::vector<NodeSharedPtr> ns;
             el->GetCurvedNodes(ns);
             if (ns.size() > 2)
             {
@@ -541,7 +539,7 @@ void OutputNekpp::TransferCurves(MeshGraphSharedPtr graph)
         {
             CurveSharedPtr curve = MemoryManager<Curve>::AllocateSharedPtr(
                 it->m_id, it->m_curveType);
-            vector<NodeSharedPtr> ns;
+            std::vector<NodeSharedPtr> ns;
             it->GetCurvedNodes(ns);
             for (int i = 0; i < ns.size(); i++)
             {
@@ -566,7 +564,7 @@ void OutputNekpp::TransferCurves(MeshGraphSharedPtr graph)
 
             if (el->GetVolumeNodes().size() > 0) // needed for extract surf case
             {
-                vector<NodeSharedPtr> ns;
+              std::vector<NodeSharedPtr> ns;
                 el->GetCurvedNodes(ns);
                 if (ns.size() > 4)
                 {
@@ -594,7 +592,7 @@ void OutputNekpp::TransferCurves(MeshGraphSharedPtr graph)
 void OutputNekpp::TransferComposites(MeshGraphSharedPtr graph)
 {
     SpatialDomains::CompositeMap &comps = graph->GetComposites();
-    map<int, string> &compLabels        = graph->GetCompositesLabels();
+    std::map<int, std::string> &compLabels        = graph->GetCompositesLabels();
 
     int j = 0;
 
@@ -729,7 +727,7 @@ void OutputNekpp::TransferComposites(MeshGraphSharedPtr graph)
         {
             // check to see if any boundary surfaces are not set and if so put
             // them into a set with tag 9999
-            map<int, FaceSharedPtr> NotSet;
+            std::map<int, FaceSharedPtr> NotSet;
 
             // loop over faceset and make a map of all faces only linked
             // to one element
@@ -784,9 +782,9 @@ void OutputNekpp::TransferComposites(MeshGraphSharedPtr graph)
 
 void OutputNekpp::TransferDomain(MeshGraphSharedPtr graph)
 {
-    map<int, SpatialDomains::CompositeMap> &domain = graph->GetDomain();
+    std::map<int, SpatialDomains::CompositeMap> &domain = graph->GetDomain();
 
-    string list;
+    std::string list;
 
     for (auto &it : m_mesh->m_composite)
     {
@@ -796,7 +794,7 @@ void OutputNekpp::TransferDomain(MeshGraphSharedPtr graph)
             {
                 list += ",";
             }
-            list += boost::lexical_cast<string>(it.second->m_id);
+            list += boost::lexical_cast<std::string>(it.second->m_id);
         }
     }
 

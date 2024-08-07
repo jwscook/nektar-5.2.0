@@ -38,8 +38,6 @@
 #include <boost/core/ignore_unused.hpp>
 #include <boost/lexical_cast.hpp>
 
-using namespace std;
-
 namespace Nektar
 {
 std::string MetricRegex::type =
@@ -139,7 +137,7 @@ bool MetricRegex::v_Test(std::istream &pStdout, std::istream &pStderr)
             // Error if no fields in regex then throw an error.
             if (matches.size() == 1)
             {
-                cerr << "No test sections in regex!" << endl;
+                std::cerr << "No test sections in regex!" << std::endl;
                 return false;
             }
 
@@ -160,9 +158,9 @@ bool MetricRegex::v_Test(std::istream &pStdout, std::istream &pStderr)
                     }
                     catch (boost::bad_lexical_cast &e)
                     {
-                        cerr << "Could not convert one of " << match
+                        std::cerr << "Could not convert one of " << match
                              << " (match) or " << okValues[i - 1].m_value
-                             << " (comparison value) to double" << endl;
+                             << " (comparison value) to double" << std::endl;
                         success = false;
                         continue;
                     }
@@ -177,11 +175,11 @@ bool MetricRegex::v_Test(std::istream &pStdout, std::istream &pStderr)
                         }
                         else
                         {
-                            cerr << "Failed tolerance match." << endl;
-                            cerr << "  Expected: " << okValues[i - 1].m_value
+                            std::cerr << "Failed tolerance match." << std::endl;
+                            std::cerr << "  Expected: " << okValues[i - 1].m_value
                                  << " +/- " << okValues[i - 1].m_tolerance
-                                 << endl;
-                            cerr << "  Result:   " << match << endl;
+                                 << std::endl;
+                            std::cerr << "  Result:   " << match << std::endl;
                             success = false;
                         }
                     }
@@ -197,9 +195,9 @@ bool MetricRegex::v_Test(std::istream &pStdout, std::istream &pStderr)
                     }
                     catch (boost::bad_lexical_cast &e)
                     {
-                        cerr << "Could not convert one of " << match
+                        std::cerr << "Could not convert one of " << match
                              << " (match) or " << okValues[i - 1].m_value
-                             << " (comparison value) to an integer" << endl;
+                             << " (comparison value) to an integer" << std::endl;
                         success = false;
                         continue;
                     }
@@ -214,11 +212,11 @@ bool MetricRegex::v_Test(std::istream &pStdout, std::istream &pStderr)
                         }
                         else
                         {
-                            cerr << "Failed tolerance match." << endl;
-                            cerr << "  Expected: " << okValues[i - 1].m_value
+                            std::cerr << "Failed tolerance match." << std::endl;
+                            std::cerr << "  Expected: " << okValues[i - 1].m_value
                                  << " +/- " << okValues[i - 1].m_intTolerance
-                                 << endl;
-                            cerr << "  Result:   " << match << endl;
+                                 << std::endl;
+                            std::cerr << "  Result:   " << match << std::endl;
                             success = false;
                         }
                     }
@@ -234,10 +232,10 @@ bool MetricRegex::v_Test(std::istream &pStdout, std::istream &pStderr)
                         }
                         else
                         {
-                            cerr << "Failed case-insensitive match." << endl;
-                            cerr << "  Expected: " << okValues[i - 1].m_value
-                                 << endl;
-                            cerr << "  Result:   " << match << endl;
+                            std::cerr << "Failed case-insensitive match." << std::endl;
+                            std::cerr << "  Expected: " << okValues[i - 1].m_value
+                                 << std::endl;
+                            std::cerr << "  Result:   " << match << std::endl;
                             success = false;
                         }
                     }
@@ -254,8 +252,8 @@ bool MetricRegex::v_Test(std::istream &pStdout, std::istream &pStderr)
 
     if (m_matches.size() != 0)
     {
-        cerr << "Expected " << nMatch << " matches but only found "
-             << (nMatch - m_matches.size()) << "!" << endl;
+        std::cerr << "Expected " << nMatch << " matches but only found "
+             << (nMatch - m_matches.size()) << "!" << std::endl;
         success = false;
     }
 
@@ -284,7 +282,7 @@ void MetricRegex::v_Generate(std::istream &pStdout, std::istream &pStderr)
             // Error if no fields in regex then throw an error.
             ASSERTL0(matches.size() != 1, "No test sections in regex!");
 
-            vector<MetricRegexFieldValue> okValues;
+            std::vector<MetricRegexFieldValue> okValues;
 
             for (int i = 1; i < matches.size(); ++i)
             {

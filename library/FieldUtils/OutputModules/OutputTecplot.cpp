@@ -35,7 +35,6 @@
 #include <iomanip>
 #include <set>
 #include <string>
-using namespace std;
 
 #include <boost/core/ignore_unused.hpp>
 
@@ -355,16 +354,16 @@ fs::path OutputTecplot::GetPath(std::string &filename, po::variables_map &vm)
     boost::ignore_unused(vm);
 
     int nprocs = m_f->m_comm->GetSize();
-    string returnstr(filename);
+    std::string returnstr(filename);
 
     // Amend for parallel output if required
     if (nprocs != 1 && !m_oneOutputFile)
     {
         int rank      = m_f->m_comm->GetRank();
         int dot       = filename.find_last_of('.');
-        string ext    = filename.substr(dot, filename.length() - dot);
-        string procId = "_P" + boost::lexical_cast<std::string>(rank);
-        string start  = filename.substr(0, dot);
+        std::string ext    = filename.substr(dot, filename.length() - dot);
+        std::string procId = "_P" + boost::lexical_cast<std::string>(rank);
+        std::string start  = filename.substr(0, dot);
         returnstr     = start + procId + ext;
     }
     return fs::path(returnstr);
@@ -380,20 +379,20 @@ void OutputTecplot::WriteTecplotFile(po::variables_map &vm)
 {
     // Variable names
     std::string coordVars[]       = {"x", "y", "z"};
-    std::vector<string> variables = m_f->m_variables;
+    std::vector<std::string> variables = m_f->m_variables;
     variables.insert(variables.begin(), coordVars, coordVars + m_coordim);
 
     int nprocs = m_f->m_comm->GetSize();
     int rank   = m_f->m_comm->GetRank();
 
     // Extract the output filename and extension
-    string filename = m_config["outfile"].as<string>();
-    string outFile  = LibUtilities::PortablePath(GetFullOutName(filename, vm));
+    std::string filename = m_config["outfile"].as<std::string>();
+    std::string outFile  = LibUtilities::PortablePath(GetFullOutName(filename, vm));
     // Open output file
-    ofstream outfile;
+    std::ofstream outfile;
     if ((m_oneOutputFile && rank == 0) || !m_oneOutputFile)
     {
-        outfile.open(outFile.c_str(), m_binary ? ios::binary : ios::out);
+        outfile.open(outFile.c_str(), m_binary ? std::ios::binary : std::ios::out);
     }
 
     if (m_oneOutputFile)
@@ -433,7 +432,7 @@ void OutputTecplot::WriteTecplotFile(po::variables_map &vm)
 
     if ((m_oneOutputFile && rank == 0) || !m_oneOutputFile)
     {
-        cout << "Written file: " << GetFullOutName(filename, vm) << endl;
+        std::cout << "Written file: " << GetFullOutName(filename, vm) << std::endl;
     }
 }
 
@@ -606,7 +605,7 @@ void OutputTecplot::WriteTecplotZone(std::ofstream &outfile)
             {
                 for (int j = 0; j < m_fields.size(); ++j)
                 {
-                    outfile << setw(12) << m_fields[j][i] << " ";
+                    outfile << std::setw(12) << m_fields[j][i] << " ";
                 }
                 outfile << std::endl;
             }
@@ -618,7 +617,7 @@ void OutputTecplot::WriteTecplotZone(std::ofstream &outfile)
                     m_f->m_comm->Recv(n, tmp);
                     for (int j = 0; j < m_fields.size(); ++j)
                     {
-                        outfile << setw(12) << tmp[j] << " ";
+                        outfile << std::setw(12) << tmp[j] << " ";
                     }
                     outfile << std::endl;
                 }
@@ -644,7 +643,7 @@ void OutputTecplot::WriteTecplotZone(std::ofstream &outfile)
             {
                 for (int j = 0; j < m_fields.size(); ++j)
                 {
-                    outfile << setw(12) << m_fields[j][i] << " ";
+                    outfile << std::setw(12) << m_fields[j][i] << " ";
                 }
                 outfile << std::endl;
             }
@@ -701,7 +700,7 @@ void OutputTecplotBinary::WriteTecplotZone(std::ofstream &outfile)
 
         // Write same name as preplot
         int rank        = m_f->m_comm->GetRank();
-        string zonename = "ZONE " + boost::lexical_cast<string>(rank);
+        std::string zonename = "ZONE " + boost::lexical_cast<std::string>(rank);
         WriteStream(outfile, zonename);
 
         WriteStream(outfile, -1);  // No parent zone
@@ -860,7 +859,7 @@ void OutputTecplot::WriteTecplotConnectivity(std::ofstream &outfile)
                 }
             }
         }
-        outfile << endl;
+        outfile << std::endl;
 
         if (m_oneOutputFile && m_f->m_comm->GetRank() == 0)
         {

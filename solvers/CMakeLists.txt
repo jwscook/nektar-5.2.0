@@ -10,6 +10,7 @@ MACRO(ADD_SOLVER_EXECUTABLE name)
 
     IF (SOLVER_LIBRARY_SOURCES)
         ADD_LIBRARY(${name}-obj OBJECT ${SOLVER_LIBRARY_SOURCES})
+        SET_PROPERTY(TARGET ${name}-obj PROPERTY POSITION_INDEPENDENT_CODE ON)
         ADD_DEPENDENCIES(${name}-obj SolverUtils)
         LIST(APPEND SOLVER_SOURCES $<TARGET_OBJECTS:${name}-obj>)
     ENDIF()
@@ -20,6 +21,26 @@ MACRO(ADD_SOLVER_EXECUTABLE name)
 
     ADD_NEKTAR_EXECUTABLE(${name}
         COMPONENT ${SOLVER_COMPONENT} DEPENDS SolverUtils SOURCES ${SOLVER_SOURCES})
+ENDMACRO()
+
+MACRO(ADD_SOLVER_LIBRARY name)
+    CMAKE_PARSE_ARGUMENTS(SOLVERLIB "" "" "SOURCES;HEADERS;DEPENDS" ${ARGN} )
+
+    # If an object library was already buuilt using ADD_SOLVER_EXECUTABLE, reuse that
+    IF (TARGET ${name}-obj)
+      SET(SOLVERLIB_SRCS_USED $<TARGET_OBJECTS:${name}-obj>)
+    ELSE()
+      SET(SOLVERLIB_SRCS_USED ${SOLVERLIB_SOURCES})
+    ENDIF()
+    # Append "Lib" suffix to target name, otherwise it clashes with the executable (final output will still be called ${name})
+    ADD_NEKTAR_LIBRARY(${name}
+                       TARGET_SUFFIX Lib
+                       LINK_MODE PRIVATE
+                       SOURCES ${SOLVERLIB_SRCS_USED}
+                       HEADERS ${SOLVERLIB_HEADERS}
+                       DEPENDS ${SOLVERLIB_DEPENDS}
+                       SUMMARY "Nektar++ ${name} library"
+                       DESCRIPTION "This library provides functionality used by ${name}.")
 ENDMACRO()
 
 MACRO(ADD_SOLVER_UTILITY name solver)

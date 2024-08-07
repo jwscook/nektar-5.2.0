@@ -45,7 +45,7 @@
 #include <fstream>
 #include <iomanip>
 #include <ios>
-#include <set>
+//#include <set>
 
 #ifdef NEKTAR_USE_MPI
 #include <mpi.h>

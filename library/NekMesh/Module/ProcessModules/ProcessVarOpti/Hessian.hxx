@@ -55,8 +55,8 @@ template <int DIM> int NodeOpti::IsIndefinite()
 
 template <> int NodeOpti::IsIndefinite<2>()
 {
-    vector<NekDouble> eigR(2);
-    vector<NekDouble> eigI(2);
+    std::vector<NekDouble> eigR(2);
+    std::vector<NekDouble> eigI(2);
     NekMatrix<NekDouble> H(2, 2);
     H(0, 0) = m_grad[2];
     H(1, 0) = m_grad[3];
@@ -69,9 +69,9 @@ template <> int NodeOpti::IsIndefinite<2>()
     NekDouble dum;
 
     DNekMat eval(nVel, nVel, 0.0, eDIAGONAL);
-    vector<NekDouble> vl(nVel * nVel);
-    vector<NekDouble> work(worklen);
-    vector<NekDouble> wi(nVel);
+    std::vector<NekDouble> vl(nVel * nVel);
+    std::vector<NekDouble> work(worklen);
+    std::vector<NekDouble> wi(nVel);
 
     Lapack::Dgeev(jobvl, jobvr, nVel, H.GetRawPtr(), nVel, &(eval.GetPtr())[0],
                   &wi[0], &vl[0], nVel, &dum, nVel, &work[0], worklen, info);
@@ -95,8 +95,8 @@ template <> int NodeOpti::IsIndefinite<2>()
 
 template <> int NodeOpti::IsIndefinite<3>()
 {
-    vector<NekDouble> eigR(3);
-    vector<NekDouble> eigI(3);
+    std::vector<NekDouble> eigR(3);
+    std::vector<NekDouble> eigI(3);
     NekMatrix<NekDouble> H(3, 3);
     H(0, 0) = m_grad[3];
     H(1, 0) = m_grad[4];
@@ -114,9 +114,9 @@ template <> int NodeOpti::IsIndefinite<3>()
     NekDouble dum;
 
     DNekMat eval(nVel, nVel, 0.0, eDIAGONAL);
-    vector<NekDouble> vl(nVel * nVel);
-    vector<NekDouble> work(worklen);
-    vector<NekDouble> wi(nVel);
+    std::vector<NekDouble> vl(nVel * nVel);
+    std::vector<NekDouble> work(worklen);
+    std::vector<NekDouble> wi(nVel);
 
     Lapack::Dgeev(jobvl, jobvr, nVel, H.GetRawPtr(), nVel, &(eval.GetPtr())[0],
                   &wi[0], &vl[0], nVel, &dum, nVel, &work[0], worklen, info);

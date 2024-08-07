@@ -32,9 +32,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <set>
 #include <string>
-using namespace std;
 
 #include "OutputFileBase.h"
 #include <LibUtilities/BasicUtils/FileSystem.h>
@@ -62,7 +60,7 @@ void OutputFileBase::Process(po::variables_map &vm)
 {
     m_f->SetUpExp(vm);
 
-    string filename = m_config["outfile"].as<string>();
+    std::string filename = m_config["outfile"].as<std::string>();
 
     if (m_f->m_fieldPts != LibUtilities::NullPtsField)
     {
@@ -89,17 +87,17 @@ void OutputFileBase::Process(po::variables_map &vm)
         {
             if (m_f->m_verbose && m_f->m_comm->TreatAsRankZero())
             {
-                cout << "\t" << GetModuleName()
+                std::cout << "\t" << GetModuleName()
                      << ": Writing boundary file(s): ";
                 for (int i = 0; i < m_f->m_bndRegionsToWrite.size(); ++i)
                 {
-                    cout << m_f->m_bndRegionsToWrite[i];
+                    std::cout << m_f->m_bndRegionsToWrite[i];
                     if (i < m_f->m_bndRegionsToWrite.size() - 1)
                     {
-                        cout << ", ";
+                        std::cout << ", ";
                     }
                 }
-                cout << endl;
+                std::cout << std::endl;
             }
 
             int nfields = m_f->m_variables.size();
@@ -113,7 +111,7 @@ void OutputFileBase::Process(po::variables_map &vm)
                 ;
 
                 // Include normal name in m_variables
-                string normstr[3] = {"Norm_x", "Norm_y", "Norm_z"};
+                std::string normstr[3] = {"Norm_x", "Norm_y", "Norm_z"};
                 for (int j = 0; j < normdim; ++j)
                 {
                     m_f->m_exp[nfields + j] =
@@ -123,7 +121,7 @@ void OutputFileBase::Process(po::variables_map &vm)
             }
 
             // Move m_exp to a new expansion vector
-            vector<MultiRegions::ExpListSharedPtr> exp(m_f->m_exp.size());
+            std::vector<MultiRegions::ExpListSharedPtr> exp(m_f->m_exp.size());
             exp.swap(m_f->m_exp);
 
             Array<OneD, Array<OneD, const MultiRegions::ExpListSharedPtr>>
@@ -139,8 +137,8 @@ void OutputFileBase::Process(po::variables_map &vm)
                                                    exp[0]->GetGraph());
             const SpatialDomains::BoundaryRegionCollection bregions =
                 bcs.GetBoundaryRegions();
-            map<int, int> BndRegionMap;
-            map<int, LibUtilities::CommSharedPtr> BndRegionComm;
+            std::map<int, int> BndRegionMap;
+            std::map<int, LibUtilities::CommSharedPtr> BndRegionComm;
             int cnt = 0;
             for (auto &breg_it : bregions)
             {
@@ -151,17 +149,17 @@ void OutputFileBase::Process(po::variables_map &vm)
 
             // find ending of output file and insert _b1, _b2
             int dot     = filename.find_last_of('.') + 1;
-            string ext  = filename.substr(dot, filename.length() - dot);
-            string name = filename.substr(0, dot - 1);
+            std::string ext  = filename.substr(dot, filename.length() - dot);
+            std::string name = filename.substr(0, dot - 1);
 
             // Store temporary communicator
             LibUtilities::CommSharedPtr tmpComm = m_f->m_comm;
 
             for (int i = 0; i < m_f->m_bndRegionsToWrite.size(); ++i)
             {
-                string outname =
+                std::string outname =
                     name + "_b" +
-                    boost::lexical_cast<string>(m_f->m_bndRegionsToWrite[i]) +
+                    boost::lexical_cast<std::string>(m_f->m_bndRegionsToWrite[i]) +
                     "." + ext;
 
                 if (!WriteFile(outname, vm))
@@ -280,17 +278,17 @@ bool OutputFileBase::WriteFile(std::string &filename, po::variables_map &vm)
 
             if (comm->TreatAsRankZero())
             {
-                string answer;
-                cout << "Did you wish to overwrite " << outFile << " (y/n)? ";
-                getline(cin, answer);
+                std::string answer;
+                std::cout << "Did you wish to overwrite " << outFile << " (y/n)? ";
+                getline(std::cin, answer);
                 if (answer.compare("y") == 0)
                 {
                     writeFile = 1;
                 }
                 else
                 {
-                    cout << "Not writing file " << filename
-                         << " because it already exists" << endl;
+                    std::cout << "Not writing file " << filename
+                         << " because it already exists" << std::endl;
                 }
             }
             comm->AllReduce(writeFile, LibUtilities::ReduceSum);
@@ -314,7 +312,7 @@ void OutputFileBase::ConvertExpToEquispaced(po::variables_map &vm)
     m_f->m_graph->SetExpansionInfoToEvenlySpacedPoints(nPointsNew);
 
     // Save original expansion
-    vector<MultiRegions::ExpListSharedPtr> expOld = m_f->m_exp;
+    std::vector<MultiRegions::ExpListSharedPtr> expOld = m_f->m_exp;
     // Create new expansion
     m_f->m_exp[0] = m_f->SetUpFirstExpList(m_f->m_numHomogeneousDir, true);
     for (int i = 1; i < numFields; ++i)
@@ -355,7 +353,7 @@ void OutputFileBase::PrintErrorFromPts()
     int coordim             = m_f->m_fieldPts->GetDim();
     std::string coordVars[] = {"x", "y", "z"};
 
-    vector<string> variables = m_f->m_variables;
+    std::vector<std::string> variables = m_f->m_variables;
     variables.insert(variables.begin(), coordVars, coordVars + coordim);
     // Get fields and coordinates
     Array<OneD, Array<OneD, NekDouble>> fields(variables.size());
@@ -373,7 +371,7 @@ void OutputFileBase::PrintErrorFromPts()
         for (int j = 0; j < npts; ++j)
         {
             l2err += fields[i][j] * fields[i][j];
-            linferr = max(linferr, fabs(fields[i][j]));
+            linferr = std::max(linferr, fabs(fields[i][j]));
         }
 
         m_f->m_comm->AllReduce(l2err, LibUtilities::ReduceSum);
@@ -385,11 +383,11 @@ void OutputFileBase::PrintErrorFromPts()
 
         if (m_f->m_comm->TreatAsRankZero())
         {
-            cout << "L 2 error (variable " << variables[i] << ") : " << l2err
-                 << endl;
+            std::cout << "L 2 error (variable " << variables[i] << ") : " << l2err
+                 << std::endl;
 
-            cout << "L inf error (variable " << variables[i]
-                 << ") : " << linferr << endl;
+            std::cout << "L inf error (variable " << variables[i]
+                 << ") : " << linferr << std::endl;
         }
     }
 }
@@ -429,11 +427,11 @@ void OutputFileBase::PrintErrorFromExp()
 
         if (m_f->m_comm->TreatAsRankZero())
         {
-            cout << "L 2 error (variable " << coordVars[j] << ") : " << l2err
-                 << endl;
+            std::cout << "L 2 error (variable " << coordVars[j] << ") : " << l2err
+                 << std::endl;
 
-            cout << "L inf error (variable " << coordVars[j]
-                 << ") : " << linferr << endl;
+            std::cout << "L inf error (variable " << coordVars[j]
+                 << ") : " << linferr << std::endl;
         }
     }
 
@@ -444,11 +442,11 @@ void OutputFileBase::PrintErrorFromExp()
 
         if (m_f->m_comm->TreatAsRankZero() && m_f->m_variables.size() > 0)
         {
-            cout << "L 2 error (variable " << m_f->m_variables[j]
-                 << ") : " << l2err << endl;
+            std::cout << "L 2 error (variable " << m_f->m_variables[j]
+                 << ") : " << l2err << std::endl;
 
-            cout << "L inf error (variable " << m_f->m_variables[j]
-                 << ") : " << linferr << endl;
+            std::cout << "L inf error (variable " << m_f->m_variables[j]
+                 << ") : " << linferr << std::endl;
         }
     }
 }

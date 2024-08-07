@@ -44,7 +44,6 @@ namespace Nektar
 namespace NekMesh
 {
 
-using namespace std;
 
 /**
  * @brief Calculate determinant of input matrix.

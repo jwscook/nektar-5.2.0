@@ -33,9 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iomanip>
-#include <set>
 #include <string>
-using namespace std;
 
 #include <boost/core/ignore_unused.hpp>
 #include <boost/format.hpp>
@@ -73,10 +71,10 @@ void OutputVtkBase::OutputFromPts(po::variables_map &vm)
     LibUtilities::PtsFieldSharedPtr fPts = m_f->m_fieldPts;
 
     // Extract the output filename and extension
-    string filename = PrepareOutput(vm);
+    std::string filename = PrepareOutput(vm);
 
     // Write solution.
-    ofstream outfile(filename.c_str());
+    std::ofstream outfile(filename.c_str());
     WriteVtkHeader(outfile);
     int nfields = 0;
     int dim     = fPts->GetDim();
@@ -126,7 +124,7 @@ void OutputVtkBase::OutputFromPts(po::variables_map &vm)
             NEKERROR(ErrorUtil::efatal, "ptsType not supported yet.");
     }
 
-    vector<Array<OneD, int>> ptsConn;
+    std::vector<Array<OneD, int>> ptsConn;
     fPts->GetConnectivity(ptsConn);
 
     nfields = fPts->GetNFields();
@@ -140,15 +138,15 @@ void OutputVtkBase::OutputFromPts(po::variables_map &vm)
 
     // write out pieces of data.
     outfile << "    <Piece NumberOfPoints=\"" << nPts << "\" NumberOfCells=\""
-            << numBlocks << "\">" << endl;
-    outfile << "      <Points>" << endl;
+            << numBlocks << "\">" << std::endl;
+    outfile << "      <Points>" << std::endl;
     outfile << "        <DataArray type=\"Float64\" "
-            << "NumberOfComponents=\"" << 3 << "\" format=\"ascii\">" << endl;
+            << "NumberOfComponents=\"" << 3 << "\" format=\"ascii\">" << std::endl;
     for (i = 0; i < nPts; ++i)
     {
         for (j = 0; j < dim; ++j)
         {
-            outfile << "          " << setprecision(8) << scientific
+            outfile << "          " << std::setprecision(8) << std::scientific
                     << fPts->GetPointVal(j, i) << " ";
         }
         for (j = dim; j < 3; ++j)
@@ -156,13 +154,13 @@ void OutputVtkBase::OutputFromPts(po::variables_map &vm)
             // pack to 3D since paraview does not seem to handle 2D
             outfile << "          0.000000";
         }
-        outfile << endl;
+        outfile << std::endl;
     }
-    outfile << "        </DataArray>" << endl;
-    outfile << "      </Points>" << endl;
-    outfile << "      <Cells>" << endl;
+    outfile << "        </DataArray>" << std::endl;
+    outfile << "      </Points>" << std::endl;
+    outfile << "      <Cells>" << std::endl;
     outfile << "        <DataArray type=\"Int32\" "
-            << "Name=\"connectivity\" format=\"ascii\">" << endl;
+            << "Name=\"connectivity\" format=\"ascii\">" << std::endl;
 
     // dump connectivity data if it exists
     outfile << "          ";
@@ -180,54 +178,54 @@ void OutputVtkBase::OutputFromPts(po::variables_map &vm)
             cnt++;
         }
     }
-    outfile << "        </DataArray>" << endl;
+    outfile << "        </DataArray>" << std::endl;
     outfile << "        <DataArray type=\"Int32\" "
-            << "Name=\"offsets\" format=\"ascii\">" << endl;
+            << "Name=\"offsets\" format=\"ascii\">" << std::endl;
 
     outfile << "          ";
     for (i = 0; i < numBlocks; ++i)
     {
         outfile << i * nvert + nvert << " ";
     }
-    outfile << endl;
-    outfile << "        </DataArray>" << endl;
+    outfile << std::endl;
+    outfile << "        </DataArray>" << std::endl;
     outfile << "        <DataArray type=\"UInt8\" "
-            << "Name=\"types\" format=\"ascii\">" << endl;
+            << "Name=\"types\" format=\"ascii\">" << std::endl;
     outfile << "          ";
     for (i = 0; i < numBlocks; ++i)
     {
         outfile << vtktype << " ";
     }
-    outfile << endl;
-    outfile << "        </DataArray>" << endl;
-    outfile << "      </Cells>" << endl;
-    outfile << "      <PointData>" << endl;
+    outfile << std::endl;
+    outfile << "        </DataArray>" << std::endl;
+    outfile << "      </Cells>" << std::endl;
+    outfile << "      <PointData>" << std::endl;
 
     // printing the fields
     for (j = 0; j < nfields; ++j)
     {
         outfile << "        <DataArray type=\"Float64\" Name=\""
-                << m_f->m_variables[j] << "\">" << endl;
+                << m_f->m_variables[j] << "\">" << std::endl;
         outfile << "          ";
         for (i = 0; i < fPts->GetNpoints(); ++i)
         {
             outfile << fPts->GetPointVal(dim + j, i) << " ";
         }
-        outfile << endl;
-        outfile << "        </DataArray>" << endl;
+        outfile << std::endl;
+        outfile << "        </DataArray>" << std::endl;
     }
 
-    outfile << "      </PointData>" << endl;
-    outfile << "    </Piece>" << endl;
+    outfile << "      </PointData>" << std::endl;
+    outfile << "    </Piece>" << std::endl;
 
     WriteVtkFooter(outfile);
-    cout << "Written file: " << filename << endl;
+    std::cout << "Written file: " << filename << std::endl;
 
     // output parallel outline info if necessary
     if ((m_f->m_comm->GetRank() == 0) && (m_f->m_comm->GetSize() != 1))
     {
         WritePVtu(vm);
-        cout << "Written file: " << filename << endl;
+        std::cout << "Written file: " << filename << std::endl;
     }
 }
 
@@ -235,10 +233,10 @@ void OutputVtkBase::OutputFromExp(po::variables_map &vm)
 {
     int i, j;
     // Extract the output filename and extension
-    string filename = PrepareOutput(vm);
+    std::string filename = PrepareOutput(vm);
 
     // Write solution.
-    ofstream outfile(filename.c_str());
+    std::ofstream outfile(filename.c_str());
     WriteVtkHeader(outfile);
     int nfields = m_f->m_variables.size();
 
@@ -269,7 +267,7 @@ void OutputVtkBase::OutputFromExp(po::variables_map &vm)
     }
 
     WriteVtkFooter(outfile);
-    cout << "Written file: " << filename << endl;
+    std::cout << "Written file: " << filename << std::endl;
 
     // output parallel outline info if necessary
     if ((m_f->m_comm->GetRank() == 0) && (m_f->m_comm->GetSize() != 1))
@@ -298,7 +296,7 @@ fs::path OutputVtkBase::GetPath(std::string &filename, po::variables_map &vm)
     {
         // replace .vtu by _vtu
         int dot     = filename.find_last_of('.');
-        string path = filename.substr(0, dot) + "_vtu";
+        std::string path = filename.substr(0, dot) + "_vtu";
         specPath    = fs::path(path);
     }
     return fs::path(specPath);
@@ -330,106 +328,106 @@ fs::path OutputVtkBase::GetFullOutName(std::string &filename,
 
 void OutputVtkBase::WriteVtkHeader(std::ostream &outfile)
 {
-    outfile << "<?xml version=\"1.0\"?>" << endl;
+    outfile << "<?xml version=\"1.0\"?>" << std::endl;
     outfile << "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" "
-            << "byte_order=\"LittleEndian\">" << endl;
-    outfile << "  <UnstructuredGrid>" << endl;
+            << "byte_order=\"LittleEndian\">" << std::endl;
+    outfile << "  <UnstructuredGrid>" << std::endl;
 }
 
 void OutputVtkBase::WriteVtkFooter(std::ostream &outfile)
 {
-    outfile << "  </UnstructuredGrid>" << endl;
-    outfile << "</VTKFile>" << endl;
+    outfile << "  </UnstructuredGrid>" << std::endl;
+    outfile << "</VTKFile>" << std::endl;
 }
 
 void OutputVtkBase::WriteEmptyVtkPiece(std::ofstream &outfile)
 {
     // write out empty piece of data.
     outfile << "    <Piece NumberOfPoints=\"" << 0 << "\" NumberOfCells=\"" << 0
-            << "\">" << endl;
-    outfile << "      <Points>" << endl;
+            << "\">" << std::endl;
+    outfile << "      <Points>" << std::endl;
     outfile << "        <DataArray type=\"Float64\" "
-            << "NumberOfComponents=\"" << 3 << "\" format=\"ascii\">" << endl;
-    outfile << "        </DataArray>" << endl;
-    outfile << "      </Points>" << endl;
-    outfile << "      <Cells>" << endl;
+            << "NumberOfComponents=\"" << 3 << "\" format=\"ascii\">" << std::endl;
+    outfile << "        </DataArray>" << std::endl;
+    outfile << "      </Points>" << std::endl;
+    outfile << "      <Cells>" << std::endl;
     outfile << "        <DataArray type=\"Int32\" "
-            << "Name=\"connectivity\" format=\"ascii\">" << endl;
-    outfile << "        </DataArray>" << endl;
+            << "Name=\"connectivity\" format=\"ascii\">" << std::endl;
+    outfile << "        </DataArray>" << std::endl;
     outfile << "        <DataArray type=\"Int32\" "
-            << "Name=\"offsets\" format=\"ascii\">" << endl;
+            << "Name=\"offsets\" format=\"ascii\">" << std::endl;
 
     outfile << "          ";
-    outfile << endl;
-    outfile << "        </DataArray>" << endl;
+    outfile << std::endl;
+    outfile << "        </DataArray>" << std::endl;
     outfile << "        <DataArray type=\"UInt8\" "
-            << "Name=\"types\" format=\"ascii\">" << endl;
+            << "Name=\"types\" format=\"ascii\">" << std::endl;
     outfile << "          ";
-    outfile << endl;
-    outfile << "        </DataArray>" << endl;
-    outfile << "      </Cells>" << endl;
-    outfile << "      <PointData>" << endl;
+    outfile << std::endl;
+    outfile << "        </DataArray>" << std::endl;
+    outfile << "      </Cells>" << std::endl;
+    outfile << "      <PointData>" << std::endl;
 
-    outfile << "      </PointData>" << endl;
-    outfile << "    </Piece>" << endl;
+    outfile << "      </PointData>" << std::endl;
+    outfile << "    </Piece>" << std::endl;
 }
 
 void OutputVtkBase::WritePVtu(po::variables_map &vm)
 {
-    string filename = m_config["outfile"].as<string>();
+    std::string filename = m_config["outfile"].as<std::string>();
     int dot         = filename.find_last_of('.');
-    string body     = filename.substr(0, dot);
+    std::string body     = filename.substr(0, dot);
     filename        = body + ".pvtu";
 
-    ofstream outfile(filename.c_str());
+    std::ofstream outfile(filename.c_str());
 
     int nprocs  = m_f->m_comm->GetSize();
-    string path = LibUtilities::PortablePath(GetPath(filename, vm));
+    std::string path = LibUtilities::PortablePath(GetPath(filename, vm));
 
-    outfile << "<?xml version=\"1.0\"?>" << endl;
+    outfile << "<?xml version=\"1.0\"?>" << std::endl;
     outfile << "<VTKFile type=\"PUnstructuredGrid\" version=\"0.1\" "
-            << "byte_order=\"LittleEndian\">" << endl;
-    outfile << "<PUnstructuredGrid GhostLevel=\"0\">" << endl;
-    outfile << "<PPoints> " << endl;
+            << "byte_order=\"LittleEndian\">" << std::endl;
+    outfile << "<PUnstructuredGrid GhostLevel=\"0\">" << std::endl;
+    outfile << "<PPoints> " << std::endl;
     outfile << "<PDataArray type=\"Float64\" NumberOfComponents=\"" << 3
-            << "\"/> " << endl;
-    outfile << "</PPoints>" << endl;
-    outfile << "<PCells>" << endl;
+            << "\"/> " << std::endl;
+    outfile << "</PPoints>" << std::endl;
+    outfile << "<PCells>" << std::endl;
     outfile << "<PDataArray type=\"Int32\" Name=\"connectivity\" "
                "NumberOfComponents=\"1\"/>"
-            << endl;
+            << std::endl;
     outfile << "<PDataArray type=\"Int32\" Name=\"offsets\"      "
                "NumberOfComponents=\"1\"/>"
-            << endl;
+            << std::endl;
     outfile << "<PDataArray type=\"UInt8\" Name=\"types\"        "
                "NumberOfComponents=\"1\"/>"
-            << endl;
-    outfile << "</PCells>" << endl;
-    outfile << "<PPointData Scalars=\"Material\">" << endl;
+            << std::endl;
+    outfile << "</PCells>" << std::endl;
+    outfile << "<PPointData Scalars=\"Material\">" << std::endl;
     for (int i = 0; i < m_f->m_variables.size(); ++i)
     {
         outfile << "<PDataArray type=\"Float64\" Name=\"" << m_f->m_variables[i]
-                << "\"/>" << endl;
+                << "\"/>" << std::endl;
     }
-    outfile << "</PPointData>" << endl;
+    outfile << "</PPointData>" << std::endl;
 
     for (int i = 0; i < nprocs; ++i)
     {
         boost::format pad("P%1$07d.vtu");
         pad % i;
         outfile << "<Piece Source=\"" << path << "/" << pad.str() << "\"/>"
-                << endl;
+                << std::endl;
     }
-    outfile << "</PUnstructuredGrid>" << endl;
-    outfile << "</VTKFile>" << endl;
+    outfile << "</PUnstructuredGrid>" << std::endl;
+    outfile << "</VTKFile>" << std::endl;
 
-    cout << "Written file: " << filename << endl;
+    std::cout << "Written file: " << filename << std::endl;
 }
 
 std::string OutputVtkBase::PrepareOutput(po::variables_map &vm)
 {
     // Extract the output filename and extension
-    string filename = m_config["outfile"].as<string>();
+    std::string filename = m_config["outfile"].as<std::string>();
 
     fs::path specPath    = GetPath(filename, vm);
     fs::path fulloutname = GetFullOutName(filename, vm);
@@ -445,15 +443,15 @@ std::string OutputVtkBase::PrepareOutput(po::variables_map &vm)
             }
             catch (fs::filesystem_error &e)
             {
-                ASSERTL0(false, "Filesystem error: " + string(e.what()));
+                ASSERTL0(false, "Filesystem error: " + std::string(e.what()));
             }
-            cout << "Writing files to directory: " << specPath << endl;
+            std::cout << "Writing files to directory: " << specPath << std::endl;
         }
         m_f->m_comm->Block();
     }
     else
     {
-        cout << "Writing: " << specPath << endl;
+        std::cout << "Writing: " << specPath << std::endl;
     }
     return filename;
 }

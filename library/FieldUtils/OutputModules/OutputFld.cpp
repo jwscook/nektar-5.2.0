@@ -32,9 +32,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <set>
 #include <string>
-using namespace std;
 
 #include <boost/core/ignore_unused.hpp>
 #include <boost/format.hpp>
@@ -79,7 +77,7 @@ void OutputFld::OutputFromExp(po::variables_map &vm)
     ASSERTL0(m_f->m_variables.size(), "OutputFld: need input data.")
 
     // Extract the output filename and extension
-    string filename = m_config["outfile"].as<string>();
+    std::string filename = m_config["outfile"].as<std::string>();
 
     // Set up FieldIO object.
     LibUtilities::FieldIOSharedPtr fld =
@@ -128,7 +126,7 @@ void OutputFld::OutputFromData(po::variables_map &vm)
     boost::ignore_unused(vm);
 
     // Extract the output filename and extension
-    string filename = m_config["outfile"].as<string>();
+    std::string filename = m_config["outfile"].as<std::string>();
     // Set up FieldIO object.
     LibUtilities::FieldIOSharedPtr fld =
         LibUtilities::GetFieldIOFactory().CreateInstance(GetIOFormat(),
@@ -183,7 +181,7 @@ std::string OutputFld::GetIOFormat()
     }
     if (m_config["format"].m_beenSet)
     {
-        iofmt = m_config["format"].as<string>();
+        iofmt = m_config["format"].as<std::string>();
     }
     return iofmt;
 }

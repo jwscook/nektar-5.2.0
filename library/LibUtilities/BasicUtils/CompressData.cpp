@@ -46,7 +46,7 @@
 #include <boost/lexical_cast.hpp>
 
 #include <cstdint>
-#include <set>
+//#include <set>
 
 #ifdef NEKTAR_USE_MPI
 #include <mpi.h>

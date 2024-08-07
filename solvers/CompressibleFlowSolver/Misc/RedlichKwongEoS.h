@@ -39,7 +39,6 @@
 
 #include <LibUtilities/SimdLib/io.hpp>
 
-using namespace std;
 
 namespace Nektar
 {

@@ -32,9 +32,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <set>
 #include <string>
-using namespace std;
 
 #include <boost/core/ignore_unused.hpp>
 #include <boost/format.hpp>
@@ -69,10 +67,10 @@ void OutputInfo::Process(po::variables_map &vm)
     boost::ignore_unused(vm);
 
     // Extract the output filename and extension
-    string filename = m_config["outfile"].as<string>();
+    std::string filename = m_config["outfile"].as<std::string>();
 
     // partition mesh
-    ASSERTL0(m_config["nparts"].as<string>().compare("NotSet") != 0,
+    ASSERTL0(m_config["nparts"].as<std::string>().compare("NotSet") != 0,
              "Need to specify nparts for info output");
     int nparts = m_config["nparts"].as<int>();
 
@@ -94,7 +92,7 @@ void OutputInfo::Process(po::variables_map &vm)
         std::string s = pad.str();
 
         fs::path fullpath = pinfilename / s;
-        string fname      = LibUtilities::PortablePath(fullpath);
+        std::string fname      = LibUtilities::PortablePath(fullpath);
         if (!fs::exists(fname))
         {
             continue;
@@ -122,7 +120,7 @@ void OutputInfo::Process(po::variables_map &vm)
     }
 
     // Write the Info.xml file
-    string infofile =
+    std::string infofile =
         LibUtilities::PortablePath(pinfilename / fs::path("Info.xml"));
 
     fldXml->WriteMultiFldFileIDs(infofile, filenames, ElementIDs);

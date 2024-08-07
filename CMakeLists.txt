@@ -303,6 +303,11 @@ IF (NEKTAR_BUILD_LIBRARY)
     INCLUDE_DIRECTORIES(library)
 ENDIF()
 
+# Both normal libraries and solver libraries can modify NEKTAR++_LIBRARIES - reset it if we're building either
+if (NEKTAR_BUILD_LIBRARY OR NEKTAR_BUILD_SOLVERS)
+    SET(NEKTAR++_LIBRARIES "" CACHE INTERNAL "")
+ENDIF()
+
 INCLUDE_DIRECTORIES(utilities)
 ADD_SUBDIRECTORY(utilities)
 
@@ -310,9 +315,6 @@ INCLUDE_DIRECTORIES(solvers)
 ADD_SUBDIRECTORY(solvers)
 
 IF (NEKTAR_BUILD_LIBRARY)
-    # List of Nektar++ libraries will be rebuilt every configuration.
-    SET(NEKTAR++_LIBRARIES "" CACHE INTERNAL "")
-
     ADD_SUBDIRECTORY(library)
     INSTALL(EXPORT Nektar++Libraries DESTINATION ${NEKTAR_CMAKE_DIR} COMPONENT dev)
 ENDIF (NEKTAR_BUILD_LIBRARY)

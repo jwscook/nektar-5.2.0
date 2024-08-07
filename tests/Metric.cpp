@@ -35,7 +35,6 @@
 #include <Metric.h>
 #include <boost/algorithm/string.hpp>
 
-using namespace std;
 
 namespace Nektar
 {
@@ -53,14 +52,14 @@ Metric::Metric(TiXmlElement *metric, bool generate)
 {
     if (!metric->Attribute("id"))
     {
-        cerr << "Metric has no ID" << endl;
+        std::cerr << "Metric has no ID" << std::endl;
     }
     if (!metric->Attribute("type"))
     {
-        cerr << "Metric has no type" << endl;
+        std::cerr << "Metric has no type" << std::endl;
     }
     m_id   = atoi(metric->Attribute("id"));
-    m_type = boost::to_upper_copy(string(metric->Attribute("type")));
+    m_type = boost::to_upper_copy(std::string(metric->Attribute("type")));
 }
 
 /**

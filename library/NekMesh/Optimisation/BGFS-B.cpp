@@ -38,7 +38,6 @@
 #include <limits>
 #include <set>
 
-using namespace std;
 namespace Nektar
 {
 namespace NekMesh
@@ -53,7 +52,7 @@ bool BGFSUpdate(OptiObjSharedPtr opti, DNekMat &J, DNekMat &B, DNekMat &H)
     Array<OneD, NekDouble> ui = opti->Getui();
     Array<OneD, NekDouble> li = opti->Getli();
 
-    set<int> Fset;
+    std::set<int> Fset;
     Array<OneD, NekDouble> ti(xi.size());
     for (int i = 0; i < ti.size(); i++)
     {

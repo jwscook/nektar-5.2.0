@@ -39,7 +39,7 @@
 #include <LibUtilities/LinearAlgebra/NekPoint.hpp>
 #include <SpatialDomains/Geometry0D.h>
 #include <SpatialDomains/SpatialDomainsDeclspec.h>
-#include <set>
+//#include <set>
 
 namespace Nektar
 {

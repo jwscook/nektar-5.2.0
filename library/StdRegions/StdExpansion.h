@@ -41,7 +41,7 @@
 #include <vector>
 
 #include <boost/core/ignore_unused.hpp>
-#include <set>
+//#include <set>
 
 #include <LibUtilities/LinearAlgebra/NekTypeDefs.hpp>
 #include <StdRegions/StdMatrixKey.h>

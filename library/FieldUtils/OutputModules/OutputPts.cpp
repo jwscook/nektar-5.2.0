@@ -33,9 +33,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <set>
 #include <string>
-using namespace std;
 
 #include <boost/core/ignore_unused.hpp>
 
@@ -72,7 +70,7 @@ void OutputPts::OutputFromPts(po::variables_map &vm)
     boost::ignore_unused(vm);
 
     // Extract the output filename and extension
-    string filename = m_config["outfile"].as<string>();
+    std::string filename = m_config["outfile"].as<std::string>();
 
     if (boost::filesystem::path(filename).extension() == ".csv")
     {

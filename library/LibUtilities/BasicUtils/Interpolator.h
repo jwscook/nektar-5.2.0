@@ -44,13 +44,14 @@
 #include <boost/geometry/geometries/box.hpp>
 #include <boost/geometry/geometries/point.hpp>
 #include <boost/geometry/index/rtree.hpp>
-#include <boost/geometry/strategies/strategies.hpp> // required with boost 1.77
 
 #include <LibUtilities/BasicUtils/ErrorUtil.hpp>
 #include <LibUtilities/BasicUtils/PtsField.h>
 #include <LibUtilities/BasicUtils/SharedArray.hpp>
 #include <LibUtilities/BasicUtils/VmathArray.hpp>
 #include <LibUtilities/LibUtilitiesDeclspec.h>
+
+#include <boost/geometry/strategies/strategies.hpp> // required with boost 1.77
 
 namespace Nektar
 {
